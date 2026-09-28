@@ -1,0 +1,1333 @@
+{
+  "info": {
+    "_postman_id": "83811f81-7669-4b09-87b4-fc12c64971ce",
+    "name": "Social Media App",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47109366",
+    "_collection_link": "https://go.postman.co/collection/47109366-83811f81-7669-4b09-87b4-fc12c64971ce?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "password",
+          "item": [
+            {
+              "name": "requset-forgot-password-code",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\" : \"a491a91beb@emailax.pro\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{domain}}/auth/request-forgot-password-code",
+                  "host": [
+                    "{{domain}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "request-forgot-password-code"
+                  ]
+                },
+                "description": "## طلب كود استعادة كلمة المرور\n\n**الطريقة:** `POST`\n**المسار:** `{{domain}}/auth/requset-forgot-password-code`\n\nتُستخدم هذه النقطة للخطوة الأولى في عملية استعادة كلمة المرور، حيث يتم إرسال كود التحقق إلى البريد الإلكتروني المسجّل.\n\n### البيانات المطلوبة في الـ Body\n- `email` — البريد الإلكتروني المسجّل للحساب\n\n### ملاحظات\n- بعد إرسال الطلب بنجاح، ستصل رسالة إلى البريد الإلكتروني تحتوي على كود التحقق.\n- انتقل بعدها إلى نقطة نهاية **verify-forgot-password-code** للتحقق من الكود."
+              },
+              "response": []
+            },
+            {
+              "name": "verify-forgot-password-code",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"ziadbusiness76@gmail.com\",\r\n    \"otp\": \"\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{domain}}/auth/verify-forgot-password-code",
+                  "host": [
+                    "{{domain}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "verify-forgot-password-code"
+                  ]
+                },
+                "description": "## التحقق من كود استعادة كلمة المرور\n\n**الطريقة:** `PATCH`\n**المسار:** `{{domain}}/auth/verify-forgot-password-code`\n\nتُستخدم هذه النقطة للخطوة الثانية في عملية استعادة كلمة المرور، حيث يتم التحقق من صحة الكود المُرسَل إلى البريد الإلكتروني.\n\n### البيانات المطلوبة في الـ Body\n- `email` — البريد الإلكتروني المسجّل\n- `code` — كود التحقق المُرسَل إلى البريد الإلكتروني\n\n### ملاحظات\n- يجب أولاً طلب الكود عبر نقطة نهاية **requset-forgot-password-code**.\n- بعد التحقق بنجاح، انتقل إلى نقطة نهاية **reset password** لتعيين كلمة مرور جديدة."
+              },
+              "response": []
+            },
+            {
+              "name": "reset-forgot-password-code",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\" : \"ziadbusiness76@gmail.com\",\r\n    \"password\" : \"Ziad1234@\",\r\n    \"confirmPassword\" : \"Ziad1234@\",\r\n    \"otp\" : \"213213\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{domain}}/auth/reset-forgot-password-code",
+                  "host": [
+                    "{{domain}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-forgot-password-code"
+                  ]
+                },
+                "description": "## إعادة تعيين كلمة المرور\n\n**المسار:** `{{domain}}/auth/reset-password`\n\nتُستخدم هذه النقطة للخطوة الأخيرة في عملية استعادة كلمة المرور، حيث يتم تعيين كلمة مرور جديدة للحساب.\n\n### البيانات المطلوبة في الـ Body\n- `email` — البريد الإلكتروني المسجّل\n- `code` — كود التحقق المُستخدَم في الخطوة السابقة\n- `password` — كلمة المرور الجديدة\n- `confirmPassword` — تأكيد كلمة المرور الجديدة\n\n### ملاحظات\n- يجب إتمام خطوتَي طلب الكود والتحقق منه قبل استخدام هذه النقطة.\n- بعد إعادة التعيين بنجاح، يمكن تسجيل الدخول بكلمة المرور الجديدة عبر نقطة نهاية **signin**."
+              },
+              "response": []
+            }
+          ],
+          "description": "يحتوي هذا القسم الفرعي على نقاط النهاية الخاصة بعمليات استعادة وإعادة تعيين كلمة المرور. تسير العملية على ثلاث خطوات متسلسلة:\n\n1. **طلب كود الاستعادة** — إرسال كود التحقق إلى البريد الإلكتروني المسجّل.\n2. **التحقق من الكود** — التأكد من صحة الكود المُدخَل.\n3. **إعادة تعيين كلمة المرور** — تحديث كلمة المرور بكلمة مرور جديدة.\n\nيجب اتباع هذه الخطوات بالترتيب لإتمام عملية استعادة كلمة المرور بنجاح."
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "pm.environment.set(\"access_token\" ,  response.data.access_token);\r",
+                  "pm.environment.set(\"refresh_token\" , response.data.refresh_token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"a491a91beb@emailax.pro\",\r\n    \"password\": \"Ziad123@\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/auth/login",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "signup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"ziad haytham\",\r\n    \"email\" : \"a491a91beb@emailax.pro\",\r\n    \"password\": \"Ziad123@\", \r\n    \"confirmPassword\": \"Ziad123@\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/auth/signup",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "auth",
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm Email",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"a491a91beb@emailax.pro\",\r\n    \"otp\": \"871854\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/auth/confirm-email",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "auth",
+                "confirm-email"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resend Confirm Email",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"a491a91beb@emailax.pro\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/auth/resend-confirm-email",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "auth",
+                "resend-confirm-email"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/user/",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/user/list",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"flag\": 0\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/user/logout",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "rotate token",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{refresh_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/user/rotate-token",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "rotate-token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"oldPassword\": \"Ziad123@\",\r\n    \"password\": \"Ziad123@\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/user/update-password",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "update-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upload profile image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "attachment",
+                  "type": "file",
+                  "uuid": "9a3f5d46-6237-462d-bf5a-8becd61e1ab8",
+                  "src": "/C:/Users/dell/Desktop/image0 (1).webp"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{domain}}/user/profile-image",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "profile-image"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upload profile cover",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "attachments",
+                  "type": "file",
+                  "uuid": "1286b437-12c5-4bcf-9661-7b22642c2036",
+                  "src": [
+                    "/C:/Users/dell/Desktop/IMG_3084.webp",
+                    "/C:/Users/dell/Desktop/image0 (2).webp"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{domain}}/user/profile-cover-image",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "profile-cover-image"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User By Id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/user/6a039da5d34d00e596bfc0f7",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "6a039da5d34d00e596bfc0f7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update user",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":\"zeka zoz\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/user/6a039da5d34d00e596bfc0f7",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "6a039da5d34d00e596bfc0f7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete user",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/user/6a039da5d34d00e596bfc0f7",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "6a039da5d34d00e596bfc0f7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "restored user",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/user/6a039da5d34d00e596bfc0f7/restore",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "6a039da5d34d00e596bfc0f7",
+                "restore"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "visit profile",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "get images user",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/user/images",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "images"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get image by userid",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/user/6a039da5d34d00e596bfc0f7/images",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "user",
+                "6a039da5d34d00e596bfc0f7",
+                "images"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "post",
+      "item": [
+        {
+          "name": "create post",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/post",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "post"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "News feed",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/post/feed",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "post",
+                "feed"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Post",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/post/6a039eec4930aed33dff19a4",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "post",
+                "6a039eec4930aed33dff19a4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get profile posts",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/post/profile/6a039da5d34d00e596bfc0f7",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "post",
+                "profile",
+                "6a039da5d34d00e596bfc0f7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update posts",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"content\" :\"essam\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/post/6a039eec4930aed33dff19a4",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "post",
+                "6a039eec4930aed33dff19a4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete post",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/post/6a039eec4930aed33dff19a4",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "post",
+                "6a039eec4930aed33dff19a4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "React On Post",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"type\":\"love\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/post/6a039f2d4930aed33dff19a5/react",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "post",
+                "6a039f2d4930aed33dff19a5",
+                "react"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete react",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"type\":\"love\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/post/6a039f2d4930aed33dff19a5/react",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "post",
+                "6a039f2d4930aed33dff19a5",
+                "react"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "comment",
+      "item": [
+        {
+          "name": "create comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"content\":\"2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/comment/post/6a039f2d4930aed33dff19a5",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "comment",
+                "post",
+                "6a039f2d4930aed33dff19a5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Post Comments",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/comment/post/6a039f2d4930aed33dff19a5",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "comment",
+                "post",
+                "6a039f2d4930aed33dff19a5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"content\" :\"ziad zeka\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/comment/6a03a562bcc90cfa9680991f",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "comment",
+                "6a03a562bcc90cfa9680991f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/comment/6a03a5c4bcc90cfa96809920",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "comment",
+                "6a03a5c4bcc90cfa96809920"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "React On Comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"type\":\"haha\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/comment/6a03a562bcc90cfa9680991f/react",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "comment",
+                "6a03a562bcc90cfa9680991f",
+                "react"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Comment Reaction",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"type\":\"haha\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{domain}}/comment/6a03a562bcc90cfa9680991f/react",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "comment",
+                "6a03a562bcc90cfa9680991f",
+                "react"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "story",
+      "item": [
+        {
+          "name": "create story",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "attachment",
+                  "type": "file",
+                  "uuid": "9f3e3339-f893-4da1-a75d-f003fbe55beb",
+                  "src": "/C:/Users/dell/Desktop/WhatsApp Image 2025-09-21 at 01.39.07_7ba27153.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{domain}}/story",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "story"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Story Feed",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/story/feed",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "story",
+                "feed"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Stories",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/story/profile/6a039da5d34d00e596bfc0f7",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "story",
+                "profile",
+                "6a039da5d34d00e596bfc0f7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Story By Id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/story/profile/6a039da5d34d00e596bfc0f7",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "story",
+                "profile",
+                "6a039da5d34d00e596bfc0f7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Story",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{domain}}/story/6a03f1d2f2e1f9922f9c984c",
+              "host": [
+                "{{domain}}"
+              ],
+              "path": [
+                "story",
+                "6a03f1d2f2e1f9922f9c984c"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
