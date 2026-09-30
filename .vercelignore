@@ -1,0 +1,14 @@
+.git/
+.vercel/
+.agents/
+.codex/
+.tmp-npm-cache/
+socialMedia-V2-main/
+docs/
+**/node_modules/
+**/.next/
+**/.vercel/
+**/.vscode/
+**/.env*
+**/*.log
+**/*.tsbuildinfo

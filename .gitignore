@@ -7,10 +7,15 @@ out/
 coverage/
 *.tsbuildinfo
 *.log
+.wrangler/
+.vercel/
+.tmp-npm-cache/
 
 # Local environment and credentials
 .env
 .env.*
+.dev.vars
+.dev.vars.*
 !.env.example
 *.pem
 *.key

@@ -1,4 +1,4 @@
-import { createServer } from "node:http";
+import { createServer, type Server } from "node:http";
 import express, {
   type Express,
   type Response,
@@ -11,7 +11,6 @@ import { globalErrorHandler } from "./middleware";
 import { PORT } from "./config/config";
 import connectDB from "./DB/connection.db";
 import { redisService } from "./common/services";
-import { deleteUnverifiedUsersJob } from "./common/utils/cronjob";
 import { userRouter } from "./modules/user";
 import cors from "cors";
 import { postRouter } from "./modules/post";
@@ -28,8 +27,8 @@ function allowedOrigins() {
     .filter(Boolean);
 }
 
-async function bootStrap(): Promise<void> {
-  await connectDB();
+async function bootStrap({ cloudflare = false } = {}): Promise<Server> {
+  await connectDB({ syncIndexes: !cloudflare, maxPoolSize: cloudflare ? 2 : 10 });
   await redisService.connect();
 
   const app: Express = express();
@@ -46,7 +45,10 @@ async function bootStrap(): Promise<void> {
     res.status(200).json({ message: "Landing Page" });
   });
 
-  deleteUnverifiedUsersJob.start();
+  if (!cloudflare) {
+    const { deleteUnverifiedUsersJob } = await import("./common/utils/cronjob/index.js");
+    deleteUnverifiedUsersJob.start();
+  }
 
   app.use("/auth", authRouter);
   app.use("/user", userRouter);
@@ -66,6 +68,7 @@ async function bootStrap(): Promise<void> {
 
   const server = createServer(app);
   const io = new SocketServer(server, {
+    ...(cloudflare ? { transports: ["polling" as const], allowUpgrades: false } : {}),
     cors: {
       origin: origins,
       credentials: true,
@@ -78,6 +81,7 @@ async function bootStrap(): Promise<void> {
   server.listen(PORT, () => {
     console.log(`Server Is Running on port ${PORT} ✈️`);
   });
+  return server;
 }
 
 export default bootStrap;

@@ -3,6 +3,7 @@ import { createClient } from "redis";
 import { REDIS_URI } from "../../config/config";
 import { EmailEnum } from "../enums";
 import { Types } from "mongoose";
+import { once } from "node:events";
 
 
 type KeyEmail = {
@@ -11,6 +12,7 @@ type KeyEmail = {
 }
 export class RedisService {
     private readonly client: RedisClientType
+    private connectionPromise: Promise<void> | undefined;
     constructor(){
         this.client = createClient({url:REDIS_URI})
         this.handelEvent()
@@ -21,9 +23,18 @@ export class RedisService {
         this.client.on("ready" , ()=>{console.log(`REDIS Ready ,,, 🍜`)});
     }
     public async connect():Promise<void>{
-        await this.client.connect()
-        console.log(`REDIS IS CONNECTED 💕`);
-        
+        if (this.client.isReady) return;
+        if (!this.connectionPromise) {
+            const connection = this.client.isOpen
+                ? once(this.client, "ready", { signal: AbortSignal.timeout(30000) })
+                : this.client.connect();
+            this.connectionPromise = connection.then(() => {
+                console.log("REDIS IS CONNECTED");
+            }).finally(() => {
+                this.connectionPromise = undefined;
+            });
+        }
+        await this.connectionPromise;
     }
 
      otpKey =  ({ email, subject = EmailEnum.ConfirmEmail } : KeyEmail) => {

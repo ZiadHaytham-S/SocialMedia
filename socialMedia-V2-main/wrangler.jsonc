@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "socialmedia-backend",
+  "main": "cloudflare/worker.mjs",
+  "compatibility_date": "2026-09-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "minify": true,
+  "alias": {
+    "bcrypt": "./node_modules/bcryptjs/index.js"
+  },
+  "vars": {
+    "NODE_ENV": "production",
+    "PORT": "8080"
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "BACKEND", "class_name": "SocialBackend" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SocialBackend"] }],
+  "triggers": { "crons": ["0 * * * *"] },
+  "observability": { "enabled": true }
+}

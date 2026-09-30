@@ -1,11 +1,12 @@
-import admin from "firebase-admin";
+import { cert, getApps, initializeApp } from "firebase-admin/app";
+import { getMessaging } from "firebase-admin/messaging";
 import { FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY, FIREBASE_PROJECT_ID } from "../../config/config";
 
 let initialized = false;
 
 function ensureFirebaseAdmin() {
   if (initialized) {
-    return admin.apps.length > 0;
+    return getApps().length > 0;
   }
 
   if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) {
@@ -13,8 +14,8 @@ function ensureFirebaseAdmin() {
   }
 
   try {
-    admin.initializeApp({
-      credential: admin.credential.cert({
+    initializeApp({
+      credential: cert({
         projectId: FIREBASE_PROJECT_ID,
         clientEmail: FIREBASE_CLIENT_EMAIL,
         privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
@@ -39,7 +40,7 @@ export async function sendFcmToTokens(tokens: string[], payload: FcmPayload) {
     return { successCount: 0, failureCount: 0, invalidTokens: [] as string[] };
   }
 
-  const response = await admin.messaging().sendEachForMulticast({
+  const response = await getMessaging().sendEachForMulticast({
     tokens,
     notification: {
       title: payload.title,

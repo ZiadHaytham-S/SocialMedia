@@ -58,7 +58,8 @@ export function connectMessagingSocket(token: string) {
 
   socket = io(API_URL, {
     auth: { token },
-    transports: ["websocket", "polling"],
+    // Start with HTTP polling; upgrade when the backend supports WebSockets.
+    transports: ["polling", "websocket"],
     autoConnect: true,
   });
 

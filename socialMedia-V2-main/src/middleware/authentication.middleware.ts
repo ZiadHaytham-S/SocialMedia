@@ -52,7 +52,7 @@ export const authentication = (
 
     switch (key) {
       case "Basic":
-        break;
+        throw new UnauthorizedException("Unsupported authorization scheme");
       default:
         const { decoded, user } = await tokenService.decodedToken({
           token: credential,
