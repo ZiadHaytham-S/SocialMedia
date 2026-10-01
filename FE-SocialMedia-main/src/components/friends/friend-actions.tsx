@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { ApiUser, FriendMeta } from "@/types/social";
 import {
   acceptFriendRequest,
@@ -28,9 +28,11 @@ export function FriendActions({ target, meta, compact = false, onMetaChange }: F
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
+  const [previousMeta, setPreviousMeta] = useState(meta);
+  if (meta !== previousMeta) {
+    setPreviousMeta(meta);
     setCurrent(meta);
-  }, [meta]);
+  }
 
   async function run(action: () => Promise<FriendMeta>) {
     setBusy(true);

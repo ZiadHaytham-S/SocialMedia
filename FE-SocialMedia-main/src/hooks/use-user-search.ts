@@ -8,38 +8,28 @@ export const USER_SEARCH_MIN_LENGTH = 2;
 export const USER_SEARCH_DEBOUNCE_MS = 350;
 
 export function useUserSearch(query: string, debounceMs = USER_SEARCH_DEBOUNCE_MS) {
-  const [hits, setHits] = useState<FriendSearchHit[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<{ query: string; hits: FriendSearchHit[]; error: string | null }>({ query: "", hits: [], error: null });
 
   const trimmed = query.trim();
   const isReady = trimmed.length >= USER_SEARCH_MIN_LENGTH;
 
   useEffect(() => {
     if (!isReady) {
-      setHits([]);
-      setIsSearching(false);
-      setError(null);
       return;
     }
 
     let ignore = false;
-    setIsSearching(true);
-    setError(null);
 
     const handle = window.setTimeout(() => {
       void searchUsersForFriends(trimmed)
         .then((results) => {
           if (!ignore) {
-            setHits(results);
-            setIsSearching(false);
+            setResult({ query: trimmed, hits: results, error: null });
           }
         })
         .catch((nextError) => {
           if (!ignore) {
-            setHits([]);
-            setIsSearching(false);
-            setError(nextError instanceof Error ? nextError.message : "Search failed");
+            setResult({ query: trimmed, hits: [], error: nextError instanceof Error ? nextError.message : "Search failed" });
           }
         });
     }, debounceMs);
@@ -50,5 +40,12 @@ export function useUserSearch(query: string, debounceMs = USER_SEARCH_DEBOUNCE_M
     };
   }, [debounceMs, isReady, trimmed]);
 
-  return { hits, isSearching, isReady, error, trimmed };
+  const isCurrent = isReady && result.query === trimmed;
+  return {
+    hits: isCurrent ? result.hits : [],
+    isSearching: isReady && !isCurrent,
+    isReady,
+    error: isCurrent ? result.error : null,
+    trimmed,
+  };
 }

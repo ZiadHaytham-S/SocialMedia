@@ -35,7 +35,6 @@ export const MentionTextarea = forwardRef<HTMLTextAreaElement, MentionTextareaPr
     value,
     onChange,
     contacts,
-    selectedTagIds: _selectedTagIds,
     onTagIdsChange,
     placeholder,
     className,
@@ -85,7 +84,7 @@ export const MentionTextarea = forwardRef<HTMLTextAreaElement, MentionTextareaPr
       width: 0,
       height: caret.height,
     };
-  }, [mentionCtx, value]);
+  }, [mentionCtx]);
 
   useEffect(() => {
     const el = textareaRef.current;

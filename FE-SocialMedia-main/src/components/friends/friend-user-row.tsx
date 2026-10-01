@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { ApiUser, FriendListItem, FriendMeta, FriendRelation } from "@/types/social";
+import type { FriendListItem, FriendMeta, FriendRelation } from "@/types/social";
 import { FriendActions } from "./friend-actions";
 import { getFriendStatus } from "@/lib/api/friend";
 import { useLocale } from "@/lib/i18n/locale-context";

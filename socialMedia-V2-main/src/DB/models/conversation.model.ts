@@ -12,6 +12,7 @@ const lastMessageSchema = new Schema(
 
 const conversationSchema = new Schema<IConversation>(
   {
+    participantKey: { type: String },
     participants: {
       type: [Types.ObjectId],
       ref: "User",
@@ -42,11 +43,16 @@ const conversationSchema = new Schema<IConversation>(
     strict: true,
     strictQuery: true,
     timestamps: true,
-    autoIndex: true,
+    autoIndex: false, // The targeted startup migration owns these indexes.
   },
 );
 
-conversationSchema.index({ participants: 1 }, { unique: true });
+// Uniqueness belongs to the pair, not each element of the participants array.
+conversationSchema.pre("validate", function () {
+  this.participantKey = this.participants.map(String).sort().join(":");
+});
+conversationSchema.index({ participantKey: 1 }, { unique: true, sparse: true });
+conversationSchema.index({ participants: 1 });
 conversationSchema.index({ lastMessageAt: -1 });
 conversationSchema.index({ "hiddenFor.userId": 1 });
 

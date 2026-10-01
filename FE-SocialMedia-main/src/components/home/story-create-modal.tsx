@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { createPortal } from "react-dom";
 import type { ApiUser } from "@/types/social";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -45,11 +46,7 @@ export function StoryCreateModal({
   onClose,
 }: StoryCreateModalProps) {
   const { t } = useLocale();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
 
   useEffect(() => {
     if (!open) {

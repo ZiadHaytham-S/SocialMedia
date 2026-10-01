@@ -37,7 +37,6 @@ export function CommentItem({
   isUpdating = false,
   isDeleting = false,
   isReplyTarget = false,
-  depth = 0,
   editedContent,
   taggedUsers = [],
   mentionContacts = [],

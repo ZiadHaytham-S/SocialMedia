@@ -75,14 +75,15 @@ export function FriendsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [setViewer, setCounts, setFriends, setIncoming, setOutgoing, setSuggestions, setBlocked, setContacts]);
 
   useEffect(() => {
     if (isAuthLoading || !isAuthenticated) {
       return;
     }
 
-    void reload();
+    const timeout = window.setTimeout(() => void reload(), 0);
+    return () => window.clearTimeout(timeout);
   }, [isAuthenticated, isAuthLoading, reload]);
 
   const tabLabel = (key: FriendsTab): MessageKey => {

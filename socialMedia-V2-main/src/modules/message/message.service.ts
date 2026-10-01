@@ -354,12 +354,16 @@ export class MessageService {
     });
 
     if (!conversation) {
-      conversation = await this.conversationRepository.createOne({
-        data: {
-          participants,
-          unreadCounts: {},
-        },
-      });
+      try {
+        conversation = await this.conversationRepository.createOne({
+          data: { participants, unreadCounts: {} },
+        });
+      } catch (error) {
+        // Two requests can open the same chat at once. Return the winning insert.
+        if ((error as { code?: number }).code !== 11000) throw error;
+        conversation = await this.conversationRepository.findOne({ filter: { participants } });
+        if (!conversation) throw error;
+      }
     }
 
     return conversation;

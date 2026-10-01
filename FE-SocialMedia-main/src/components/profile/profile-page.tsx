@@ -41,9 +41,6 @@ export function ProfilePage({ userId }: ProfilePageProps) {
 
   useEffect(() => {
     if (isAuthLoading || !isAuthenticated) {
-      if (!isAuthLoading && !isAuthenticated) {
-        setIsLoading(false);
-      }
       return;
     }
 
@@ -98,10 +95,11 @@ export function ProfilePage({ userId }: ProfilePageProps) {
       }
     }
 
-    loadProfile();
+    const timeout = window.setTimeout(() => void loadProfile(), 0);
 
     return () => {
       ignore = true;
+      window.clearTimeout(timeout);
     };
   }, [isAuthLoading, isAuthenticated, userId]);
 

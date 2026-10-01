@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { confirmEmail, resendConfirmEmail } from "@/lib/api/auth";
 import { autoLoginAfterConfirm } from "@/lib/auth/auto-login-after-confirm";
 import { FieldError } from "@/components/ui/field-error";
@@ -24,21 +24,13 @@ export function ConfirmEmailForm() {
   const searchParams = useSearchParams();
   const { t } = useLocale();
   const [error, setError] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(searchParams.get("email") ?? "");
   const [success, setSuccess] = useState<MessageKey | "">("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors<ConfirmEmailField>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [needsManualLogin, setNeedsManualLogin] = useState(false);
-
-  useEffect(() => {
-    const emailFromQuery = searchParams.get("email");
-
-    if (emailFromQuery) {
-      setEmail(emailFromQuery);
-    }
-  }, [searchParams]);
 
   async function handleConfirm(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

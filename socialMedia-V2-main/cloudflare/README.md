@@ -94,6 +94,11 @@ node cloudflare/smoke.cjs https://socialmedia-backend.ziad-socialmedia.workers.d
 
 ## Validation and limits
 
+The 2026-10-01 audit and regression coverage are documented in
+[`../../docs/PRODUCTION_AUDIT.md`](../../docs/PRODUCTION_AUDIT.md). Production
+notification links use the explicit `FRONTEND_URL` variable in `wrangler.jsonc`.
+The conversation index migration runs at startup and preserves existing chat data.
+
 `cloudflare/smoke.cjs` checks startup, protected routes, invalid login validation,
 CORS, Socket.IO polling session authentication, and missing-route handling. It does
 not create accounts or send messages. An additional deployment check used a

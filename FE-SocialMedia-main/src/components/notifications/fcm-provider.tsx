@@ -1,4 +1,5 @@
 "use client";
+import { notificationPath } from "@/lib/notifications/notification-path";
 
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useRef } from "react";
@@ -85,11 +86,16 @@ export function FcmProvider() {
         const body = payload.body ?? "";
 
         try {
-          new Notification(title, {
+          const notification = new Notification(title, {
             body,
             icon: "/default-avatar.svg",
             data: payload.data,
           });
+          notification.onclick = () => {
+            notification.close();
+            window.focus();
+            window.location.assign(notificationPath(payload.data?.url) || "/");
+          };
         } catch {
           /* ignore if Notification constructor fails */
         }

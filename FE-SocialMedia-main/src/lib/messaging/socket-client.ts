@@ -28,6 +28,8 @@ export type MessagingSocketPayload =
   | NotificationSocketPayload;
 
 let socket: Socket | null = null;
+const conversationRooms = new Set<string>();
+let presenceTimer: ReturnType<typeof setInterval> | undefined;
 
 function emitSocketEvent(payload: MessagingSocketPayload) {
   if (typeof window !== "undefined") {
@@ -46,13 +48,13 @@ export function getMessagingSocket() {
 }
 
 export function connectMessagingSocket(token: string) {
-  if (socket?.connected) {
-    return socket;
-  }
-
   if (socket) {
-    socket.auth = { token };
-    socket.connect();
+    const previousToken = (socket.auth as { token?: string }).token;
+    if (previousToken !== token) {
+      socket.disconnect();
+      socket.auth = { token };
+    }
+    if (!socket.connected) socket.connect();
     return socket;
   }
 
@@ -61,6 +63,22 @@ export function connectMessagingSocket(token: string) {
     // Start with HTTP polling; upgrade when the backend supports WebSockets.
     transports: ["polling", "websocket"],
     autoConnect: true,
+  });
+
+  socket.on("connect", () => {
+    for (const conversationId of conversationRooms) {
+      socket?.emit("join:conversation", conversationId);
+    }
+    socket?.emit("presence:ping");
+    if (presenceTimer) clearInterval(presenceTimer);
+    presenceTimer = setInterval(() => {
+      if (socket?.connected) socket.emit("presence:ping");
+    }, 30000);
+  });
+
+  socket.on("disconnect", () => {
+    if (presenceTimer) clearInterval(presenceTimer);
+    presenceTimer = undefined;
   });
 
   socket.on("message:new", (message) => {
@@ -104,6 +122,9 @@ export function connectMessagingSocket(token: string) {
 }
 
 export function disconnectMessagingSocket() {
+  conversationRooms.clear();
+  if (presenceTimer) clearInterval(presenceTimer);
+  presenceTimer = undefined;
   if (!socket) {
     return;
   }
@@ -114,10 +135,12 @@ export function disconnectMessagingSocket() {
 }
 
 export function joinConversationRoom(conversationId: string) {
+  conversationRooms.add(conversationId);
   socket?.emit("join:conversation", conversationId);
 }
 
 export function leaveConversationRoom(conversationId: string) {
+  conversationRooms.delete(conversationId);
   socket?.emit("leave:conversation", conversationId);
 }
 

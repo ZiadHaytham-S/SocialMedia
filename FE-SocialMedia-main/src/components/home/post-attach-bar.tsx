@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale } from "@/lib/i18n/locale-context";
-import { cn } from "@/lib/theme/ui";
 import { ComposerFeelingIcon, ComposerPhotoIcon, ComposerTagIcon } from "./icons";
 import { focusMentionInTextarea } from "./mention-textarea";
 

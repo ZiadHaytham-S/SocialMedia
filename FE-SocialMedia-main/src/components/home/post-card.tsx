@@ -104,14 +104,16 @@ export function PostCard({ post, viewer, contacts = [], onDeletePost, onUpdatePo
     }
   }
 
-  useEffect(() => {
+  const [previousCommentsPost, setPreviousCommentsPost] = useState(post);
+  if (post !== previousCommentsPost) {
+    setPreviousCommentsPost(post);
     const preview = post.comments ?? [];
     setComments(preview);
     setCommentsCount(post.commentsCount ?? preview.length);
     setSharesCount(getDisplayShareCount(post));
     setCommentsLoaded(false);
     setCommentsOpen(false);
-  }, [post]);
+  }
 
   function syncReactionState(nextPost: ApiPost) {
     setIsReacted(nextPost.viewerReacted);
@@ -136,7 +138,9 @@ export function PostCard({ post, viewer, contacts = [], onDeletePost, onUpdatePo
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [postMenuOpen]);
 
-  useEffect(() => {
+  const [previousReactionPost, setPreviousReactionPost] = useState(post);
+  if (post !== previousReactionPost) {
+    setPreviousReactionPost(post);
     setCurrentPost(post);
     setIsReacted(post.viewerReacted);
     setViewerReactionType(post.viewerReactionType);
@@ -146,7 +150,7 @@ export function PostCard({ post, viewer, contacts = [], onDeletePost, onUpdatePo
     setEditedAllowComments(post.allowComments !== false);
     setEditedAvailability(post.availability ?? "PUBLIC");
     setEditedTagIds(post.tagIds ?? []);
-  }, [post]);
+  }
 
   async function handleRemoveReaction() {
     setPostError("");

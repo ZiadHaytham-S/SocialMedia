@@ -32,9 +32,6 @@ export function PostDetailPage({ postId }: PostDetailPageProps) {
 
   useEffect(() => {
     if (isAuthLoading || !isAuthenticated) {
-      if (!isAuthLoading && !isAuthenticated) {
-        setIsLoading(false);
-      }
       return;
     }
 
@@ -70,10 +67,11 @@ export function PostDetailPage({ postId }: PostDetailPageProps) {
       }
     }
 
-    void load();
+    const timeout = window.setTimeout(() => void load(), 0);
 
     return () => {
       ignore = true;
+      window.clearTimeout(timeout);
     };
   }, [isAuthenticated, isAuthLoading, postId]);
 

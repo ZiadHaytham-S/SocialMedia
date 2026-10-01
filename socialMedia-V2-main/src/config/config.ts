@@ -33,6 +33,7 @@ export const APPLICATION_EMAIL = process.env.APPLICATION_EMAIL
 export const CLIENT_ID = process.env.CLIENT_ID as string
 
 export const FE_ORIGIN = process.env.FE_ORIGIN
+export const FRONTEND_URL = process.env.FRONTEND_URL
 
 /** Firebase Admin (FCM server) — download service account from Firebase Console */
 export const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID

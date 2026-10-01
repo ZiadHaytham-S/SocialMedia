@@ -6,7 +6,9 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:regression": "node scripts/notification-regression.mjs && node scripts/socket-regression.mjs",
+    "test:smoke": "node scripts/frontend-smoke.mjs"
   },
   "dependencies": {
     "@apollo/client": "^4.2.6",

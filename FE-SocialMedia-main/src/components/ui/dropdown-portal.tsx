@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 export type DropdownPlacement = "top" | "bottom" | "auto";
 export type DropdownAlign = "start" | "end";
@@ -83,35 +84,33 @@ export function DropdownPortal({
   getAnchorRect,
 }: DropdownPortalProps) {
   const menuRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHydrated();
   const [position, setPosition] = useState<Position | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const updatePosition = () => {
-    const menu = menuRef.current;
-    if (!menu) {
-      return;
-    }
-
-    const custom = getAnchorRect?.();
-    const elementRect = anchorRef.current?.getBoundingClientRect();
-    const rect = custom ?? elementRect;
-
-    if (!rect) {
-      return;
-    }
-
-    setPosition(computePosition(rect, menu.offsetHeight, placement, minWidth, align, fixedWidth));
-  };
 
   useLayoutEffect(() => {
     if (!open) {
+      // Clear measured position before paint when the portal closes.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPosition(null);
       return;
     }
+
+    const updatePosition = () => {
+      const menu = menuRef.current;
+      if (!menu) {
+        return;
+      }
+
+      const custom = getAnchorRect?.();
+      const elementRect = anchorRef.current?.getBoundingClientRect();
+      const rect = custom ?? elementRect;
+
+      if (!rect) {
+        return;
+      }
+
+      setPosition(computePosition(rect, menu.offsetHeight, placement, minWidth, align, fixedWidth));
+    };
 
     updatePosition();
     const raf = requestAnimationFrame(updatePosition);

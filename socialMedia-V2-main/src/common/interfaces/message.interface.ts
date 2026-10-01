@@ -7,6 +7,7 @@ export interface IConversationLastMessage {
 }
 
 export interface IConversation {
+  participantKey?: string;
   participants: [Types.ObjectId, Types.ObjectId];
   lastMessage?: IConversationLastMessage;
   lastMessageAt?: Date;

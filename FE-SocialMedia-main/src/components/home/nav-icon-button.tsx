@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { cn, ui } from "@/lib/theme/ui";
+import { cn } from "@/lib/theme/ui";
 
 type NavIconButtonProps = {
   label: string;

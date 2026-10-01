@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { createPortal } from "react-dom";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { cn, ui } from "@/lib/theme/ui";
@@ -16,11 +17,7 @@ type PostModalShellProps = {
 
 export function PostModalShell({ open, titleId, title, onClose, children, footer }: PostModalShellProps) {
   const { t } = useLocale();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
 
   useEffect(() => {
     if (!open) {

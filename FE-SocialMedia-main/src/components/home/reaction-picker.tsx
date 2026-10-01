@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
+import { useHydrated } from "@/hooks/use-hydrated";
 import type { ReactionType } from "@/types/social";
 import { getReactionConfig, REACTIONS } from "@/lib/reactions";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -110,15 +111,13 @@ function ReactionPickerFloating({
   onHoverStart,
   onHoverEnd,
 }: ReactionPickerFloatingProps) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHydrated();
   const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useLayoutEffect(() => {
     if (!open) {
+      // Reset measured geometry before the next paint; this is layout state.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCoords(null);
       return;
     }
@@ -268,11 +267,19 @@ export function ReactionLikeControl({
     };
   }, [clearCloseTimer, clearLongPressTimer, clearOpenTimer]);
 
+  const [previousDisabled, setPreviousDisabled] = useState(disabled);
+  if (disabled !== previousDisabled) {
+    setPreviousDisabled(disabled);
+    if (disabled) setOpen(false);
+  }
+
   useEffect(() => {
     if (disabled) {
-      closePickerNow();
+      clearOpenTimer();
+      clearCloseTimer();
+      clearLongPressTimer();
     }
-  }, [closePickerNow, disabled]);
+  }, [clearOpenTimer, clearCloseTimer, clearLongPressTimer, disabled]);
 
   useEffect(() => {
     if (!open) {

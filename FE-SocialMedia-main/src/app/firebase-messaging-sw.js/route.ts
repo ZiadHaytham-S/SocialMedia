@@ -1,3 +1,5 @@
+import { notificationPath } from "@/lib/notifications/notification-path";
+
 export const runtime = "nodejs";
 
 function firebasePublicConfig() {
@@ -17,6 +19,8 @@ export async function GET() {
   const script = `
 importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging-compat.js");
+
+const notificationPath = ${notificationPath.toString()};
 
 firebase.initializeApp(${JSON.stringify(config)});
 
@@ -47,7 +51,8 @@ messaging.onBackgroundMessage(function (payload) {
 
 self.addEventListener("notificationclick", function (event) {
   event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || "/";
+  const path = notificationPath(event.notification.data && event.notification.data.url) || "/";
+  const url = new URL(path, self.location.origin).href;
   event.waitUntil(clients.openWindow(url));
 });
 `.trim();

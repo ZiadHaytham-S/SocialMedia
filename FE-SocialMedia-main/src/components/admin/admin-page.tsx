@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ApiUser } from "@/types/social";
 import { ADMIN_ROLE, isAdmin } from "@/lib/auth/roles";
 import { deleteUser, getViewer, listUsers, restoreUser, setUserRole } from "@/lib/api/user";
@@ -24,7 +24,7 @@ export function AdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  async function reload() {
+  const reload = useCallback(async () => {
     setIsLoading(true);
     setError("");
 
@@ -45,13 +45,14 @@ export function AdminPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [t]);
 
   useEffect(() => {
     if (!isAuthLoading && isAuthenticated) {
-      void reload();
+      const timeout = window.setTimeout(() => void reload(), 0);
+      return () => window.clearTimeout(timeout);
     }
-  }, [isAuthenticated, isAuthLoading]);
+  }, [isAuthenticated, isAuthLoading, reload]);
 
   const filtered = users.filter((user) => {
     const q = query.trim().toLowerCase();

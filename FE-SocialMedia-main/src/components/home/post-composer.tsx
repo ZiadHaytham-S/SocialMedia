@@ -30,19 +30,15 @@ export function PostComposer({ viewer, contacts = [], onCreatePost }: PostCompos
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!attachment?.type.startsWith("image/")) {
-      setAttachmentPreview(undefined);
-      return;
-    }
-
-    const url = URL.createObjectURL(attachment);
-    setAttachmentPreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [attachment]);
+    return () => {
+      if (attachmentPreview) URL.revokeObjectURL(attachmentPreview);
+    };
+  }, [attachmentPreview]);
 
   function resetForm() {
     setContent("");
     setAttachment(undefined);
+    setAttachmentPreview(undefined);
     setAllowComments(true);
     setAvailability("PUBLIC");
     setTagIds([]);
@@ -132,6 +128,7 @@ export function PostComposer({ viewer, contacts = [], onCreatePost }: PostCompos
             const file = event.target.files?.[0];
             if (file) {
               setAttachment(file);
+              setAttachmentPreview(file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined);
               handleOpen();
             }
           }}
@@ -156,6 +153,7 @@ export function PostComposer({ viewer, contacts = [], onCreatePost }: PostCompos
         onPhotoClick={() => fileInputRef.current?.click()}
         onRemoveAttachment={() => {
           setAttachment(undefined);
+          setAttachmentPreview(undefined);
           if (fileInputRef.current) {
             fileInputRef.current.value = "";
           }

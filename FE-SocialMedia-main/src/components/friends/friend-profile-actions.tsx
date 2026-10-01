@@ -20,14 +20,16 @@ export function FriendProfileActions({ target, initialMeta, onMetaChange }: Frie
   const [loadError, setLoadError] = useState("");
   const [retryKey, setRetryKey] = useState(0);
 
-  useEffect(() => {
+  const [previousInitialMeta, setPreviousInitialMeta] = useState(initialMeta);
+  if (initialMeta !== previousInitialMeta) {
+    setPreviousInitialMeta(initialMeta);
     setMeta(initialMeta);
-  }, [initialMeta]);
+    setIsLoading(!initialMeta);
+    setLoadError("");
+  }
 
   useEffect(() => {
     if (initialMeta && retryKey === 0) {
-      setIsLoading(false);
-      setLoadError("");
       return;
     }
 
@@ -54,10 +56,11 @@ export function FriendProfileActions({ target, initialMeta, onMetaChange }: Frie
       }
     }
 
-    void load();
+    const timeout = window.setTimeout(() => void load(), 0);
 
     return () => {
       ignore = true;
+      window.clearTimeout(timeout);
     };
   }, [initialMeta, retryKey, target.id, t]);
 

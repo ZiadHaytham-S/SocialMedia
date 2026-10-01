@@ -3,6 +3,8 @@ import { TokenService } from "../../../common/services";
 import { TokenTypeEnum } from "../../../common/enums";
 import { UnauthorizedException } from "../../../common/exceptions";
 import { markUserOffline, markUserOnline, refreshUserPresence } from "./presence";
+import { ConversationModel } from "../../../DB/models/conversation.model";
+import { Types } from "mongoose";
 
 export function registerMessageSocketHandlers(io: SocketServer) {
   const tokenService = new TokenService();
@@ -35,9 +37,15 @@ export function registerMessageSocketHandlers(io: SocketServer) {
 
     io.emit("presence:update", { userId, online: true });
 
-    socket.on("join:conversation", (conversationId: string) => {
-      if (typeof conversationId === "string" && conversationId.trim()) {
-        void socket.join(`conversation:${conversationId}`);
+    socket.on("join:conversation", async (conversationId: string) => {
+      if (typeof conversationId !== "string" || !/^[a-f\d]{24}$/i.test(conversationId)) return;
+      try {
+        const conversation = await ConversationModel.exists({
+          _id: new Types.ObjectId(conversationId), participants: new Types.ObjectId(userId),
+        });
+        if (conversation && socket.connected) await socket.join(`conversation:${conversationId}`);
+      } catch (error) {
+        console.warn("Failed to authorize conversation subscription", error);
       }
     });
 
@@ -48,7 +56,7 @@ export function registerMessageSocketHandlers(io: SocketServer) {
     });
 
     socket.on("typing:start", (payload: { conversationId?: string }) => {
-      if (!payload?.conversationId) {
+      if (!payload?.conversationId || !socket.rooms.has(`conversation:${payload.conversationId}`)) {
         return;
       }
 
@@ -60,7 +68,7 @@ export function registerMessageSocketHandlers(io: SocketServer) {
     });
 
     socket.on("typing:stop", (payload: { conversationId?: string }) => {
-      if (!payload?.conversationId) {
+      if (!payload?.conversationId || !socket.rooms.has(`conversation:${payload.conversationId}`)) {
         return;
       }
 
@@ -76,6 +84,8 @@ export function registerMessageSocketHandlers(io: SocketServer) {
     });
 
     socket.on("disconnect", () => {
+      // A second tab/device can still be connected to the same account.
+      if (io.sockets.adapter.rooms.get(`user:${userId}`)?.size) return;
       void markUserOffline(userId);
       io.emit("presence:update", { userId, online: false });
     });

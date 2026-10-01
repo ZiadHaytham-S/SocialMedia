@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { formatMessage, LOCALE_STORAGE_KEY, type Locale, type MessageKey, messages } from "./messages";
 
 type LocaleContextValue = {
@@ -22,13 +23,9 @@ function readStoredLocale(): Locale {
 }
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("ar");
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    setLocaleState(readStoredLocale());
-    setReady(true);
-  }, []);
+  const [selectedLocale, setLocaleState] = useState<Locale>();
+  const ready = useHydrated();
+  const locale = selectedLocale ?? (ready ? readStoredLocale() : "ar");
 
   useEffect(() => {
     if (!ready) {

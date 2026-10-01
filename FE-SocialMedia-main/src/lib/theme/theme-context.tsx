@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 export type Theme = "light" | "dark";
 
@@ -30,13 +31,9 @@ function readStoredTheme(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("light");
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    setThemeState(readStoredTheme());
-    setReady(true);
-  }, []);
+  const [selectedTheme, setThemeState] = useState<Theme>();
+  const ready = useHydrated();
+  const theme = selectedTheme ?? (ready ? readStoredTheme() : "light");
 
   useEffect(() => {
     if (!ready) {
@@ -53,8 +50,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setThemeState((current) => (current === "dark" ? "light" : "dark"));
-  }, []);
+    setThemeState(theme === "dark" ? "light" : "dark");
+  }, [theme]);
 
   const value = useMemo(
     () => ({

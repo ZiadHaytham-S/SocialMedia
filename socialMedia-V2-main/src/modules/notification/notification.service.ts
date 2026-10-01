@@ -8,7 +8,7 @@ import { DevicePlatformEnum, NotificationTypeEnum } from "../../common/enums/not
 import { IUser } from "../../common/interfaces";
 import { NotFoundException } from "../../common/exceptions";
 import { sendFcmToTokens } from "../../common/services/fcm.service";
-import { FE_ORIGIN } from "../../config/config";
+import { FE_ORIGIN, FRONTEND_URL } from "../../config/config";
 import { emitToUser } from "../message/socket/emit";
 import { isUserOnline } from "../message/socket/presence";
 
@@ -33,7 +33,13 @@ export class NotificationService {
   }
 
   private appUrl(path: string) {
-    const base = (FE_ORIGIN ?? "http://localhost:3001").split(",")[0]?.trim() ?? "http://localhost:3001";
+    const origins = (FE_ORIGIN ?? "").split(",").map((value) => value.trim()).filter(Boolean);
+    const base = FRONTEND_URL?.trim() || origins.find((origin) => {
+      try {
+        const url = new URL(origin);
+        return url.protocol === "https:" && !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+      } catch { return false; }
+    }) || origins[0] || "http://localhost:3001";
     return `${base.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
   }
 

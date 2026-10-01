@@ -16,6 +16,7 @@ import { NOTIFICATIONS_SOCKET_EVENT, type NotificationSocketPayload } from "@/li
 import type { AppNotification } from "@/types/social";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { cn, ui } from "@/lib/theme/ui";
+import { notificationPath } from "@/lib/notifications/notification-path";
 
 function formatRelativeTime(iso: string, locale: string) {
   const date = new Date(iso);
@@ -43,9 +44,8 @@ function formatRelativeTime(iso: string, locale: string) {
 }
 
 function notificationHref(item: AppNotification) {
-  if (item.data.url) {
-    return item.data.url;
-  }
+  const path = notificationPath(item.data.url);
+  if (path) return path;
 
   if (item.type === "friend_request") {
     return "/friends";
