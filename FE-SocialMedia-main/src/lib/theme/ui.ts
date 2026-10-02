@@ -13,8 +13,8 @@ export const ui = {
   cardPaddedSm: "rounded-lg bg-surface p-3 shadow-[var(--shadow-card)]",
 
   /** Home feed column spacing (Facebook-like rhythm). */
-  feedMain: "grid grid-cols-1 gap-y-4 px-2 pb-10 pt-16 sm:px-4 lg:grid-cols-[280px_minmax(0,680px)] xl:grid-cols-[280px_minmax(0,680px)_320px] xl:justify-center",
-  feedColumn: "mx-auto flex w-full max-w-[680px] flex-col gap-3 sm:gap-4",
+  feedMain: "grid grid-cols-[minmax(0,1fr)] gap-y-4 px-2 pb-10 pt-16 sm:px-4 lg:grid-cols-[240px_minmax(0,680px)] xl:grid-cols-[240px_minmax(0,680px)_280px] xl:justify-center",
+  feedColumn: "mx-auto flex min-w-0 w-full max-w-[680px] flex-col gap-3 sm:gap-4",
   storiesTrack:
     "flex items-stretch gap-3 overflow-x-auto overflow-y-visible overscroll-x-contain px-4 py-4 scrollbar-hide",
   storyTile:
@@ -53,7 +53,7 @@ export const ui = {
   inputFieldSm:
     "h-9 w-full rounded-lg border border-border-light bg-surface px-3 text-[13px] text-t-primary outline-none transition focus:border-fb focus:ring-1 focus:ring-fb/30",
   composerPill:
-    "flex h-10 w-full items-center rounded-full bg-surface-input px-4 text-start text-[17px] font-normal text-t-muted transition hover:bg-surface-hover cursor-text",
+    "flex min-h-10 min-w-0 flex-1 items-center rounded-full bg-surface-input px-3 py-2 text-start text-[14px] sm:px-4 sm:text-[17px] font-normal text-t-muted transition hover:bg-surface-hover cursor-text",
   inputSoft:
     "min-w-0 flex-1 rounded-full bg-surface-input px-4 py-2 text-[15px] text-t-primary outline-none transition placeholder:text-t-muted focus:bg-surface focus:ring-1 focus:ring-fb/25",
   textarea:
@@ -78,7 +78,7 @@ export const ui = {
   btnSecondary:
     "rounded-lg bg-surface-muted px-4 py-2 text-[15px] font-semibold text-t-primary transition hover:bg-surface-hover",
   composerAction:
-    "flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-[15px] font-semibold text-t-secondary transition hover:bg-surface-hover",
+    "flex min-w-0 flex-1 flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 rounded-lg py-2 text-[12px] sm:text-[15px] font-semibold text-t-secondary transition hover:bg-surface-hover",
 
   alertError: "rounded-lg bg-danger-soft px-3 py-2 text-[13px] font-medium text-danger",
   alertSuccess: "rounded-lg bg-success-soft px-3 py-2 text-[13px] font-medium text-success",
@@ -95,10 +95,10 @@ export const ui = {
   sidebarHeading: "mb-2 px-2 text-[17px] font-bold text-t-muted",
 
   /* Post action bar — four actions on one row */
-  postStats: "flex items-center justify-between border-b border-border-light px-4 py-2.5",
+  postStats: "flex flex-wrap items-center justify-between gap-2 border-b border-border-light px-3 sm:px-4 py-2.5",
   postActions: "relative z-[1] flex overflow-visible border-b border-border-light px-1 py-0.5",
   postActionBtn:
-    "mx-0.5 flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg text-[14px] font-semibold text-t-secondary transition hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-40 sm:text-[15px] sm:gap-2",
+    "mx-0.5 flex min-h-11 min-w-0 flex-1 flex-col sm:flex-row items-center justify-center gap-1 rounded-lg px-0.5 py-1 text-[11px] font-semibold text-t-secondary transition hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-40 sm:text-[15px] sm:gap-2",
 
   commentsSection: "bg-surface px-4 py-3.5",
   commentComposer: "flex items-center gap-2 border-t border-border-light bg-surface px-4 py-3.5",

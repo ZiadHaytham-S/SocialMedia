@@ -52,18 +52,18 @@ export function TopNav({ viewer }: TopNavProps) {
 
   return (
     <header className={ui.navHeader}>
-      <nav className="grid h-14 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-1 px-2 sm:gap-2 sm:px-3 lg:px-5">
-        <div className="flex min-w-0 items-center gap-2">
+      <nav className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-1 px-2 sm:gap-x-2 sm:px-3 xl:h-14 xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] xl:px-5">
+        <div className="flex h-14 min-w-0 items-center gap-2">
           <Link href="/" title={t("nav.home")}>
             <BrandIcon className="h-10 w-10 shrink-0 text-fb" />
           </Link>
           <UserSearchBox
-            className="hidden min-w-0 sm:block"
-            inputClassName="w-36 lg:w-56 xl:w-64"
+            className="min-w-0 flex-1 xl:flex-none"
+            inputClassName="w-full xl:w-40 2xl:w-64"
           />
         </div>
 
-        <div className="flex h-full items-stretch justify-center">
+        <div className="order-3 col-span-2 flex h-11 items-stretch justify-center border-t border-border-light xl:order-none xl:col-span-1 xl:h-full xl:border-0">
           {mainNavItems.map((item) => {
             const Icon = item.icon;
             const active = item.isActive?.(pathname) ?? false;
@@ -84,14 +84,10 @@ export function TopNav({ viewer }: TopNavProps) {
         </div>
 
         {/* يمين: تفاعل → تفضيلات (لغة/مظهر) → حساب */}
-        <div className="flex items-center justify-end gap-1">
+        <div className="flex h-14 items-center justify-end gap-1">
           <MessagesNavLink />
 
           <NotificationBell />
-
-          <LanguageSwitcher iconClassName={NAV_ICON_CLASS} />
-
-          <ThemeToggle iconClassName={NAV_ICON_CLASS} />
 
           <Link
             className={cn(
@@ -105,6 +101,9 @@ export function TopNav({ viewer }: TopNavProps) {
             <span className="sr-only">{t("nav.profile")}</span>
           </Link>
 
+          <div className="hidden items-center gap-1 xl:flex">
+          <LanguageSwitcher iconClassName={NAV_ICON_CLASS} />
+          <ThemeToggle iconClassName={NAV_ICON_CLASS} />
           {isAdmin(viewer) ? (
             <NavIconButton href="/admin" label={t("nav.admin")} title={t("nav.admin")}>
               <SettingsIcon className={NAV_ICON_CLASS} />
@@ -118,6 +117,21 @@ export function TopNav({ viewer }: TopNavProps) {
           <NavIconButton label={t("nav.logout")} onClick={() => signOutWithBackend("/login")} title={t("nav.logout")}>
             <LogoutIcon className={NAV_ICON_CLASS} />
           </NavIconButton>
+          </div>
+          <details className="relative xl:hidden">
+            <summary aria-label={t("nav.settings")} className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full bg-surface-muted text-t-secondary [&::-webkit-details-marker]:hidden">
+              <span aria-hidden="true" className="text-xl">☰</span>
+            </summary>
+            <div className="absolute end-0 top-12 z-50 w-56 rounded-xl border border-border-light bg-surface p-3 shadow-[var(--shadow-elevated)]">
+              <div className="mb-2 flex gap-2">
+                <LanguageSwitcher iconClassName={NAV_ICON_CLASS} />
+                <ThemeToggle iconClassName={NAV_ICON_CLASS} />
+              </div>
+              {isAdmin(viewer) ? <Link className={ui.menuItem} href="/admin">{t("nav.admin")}</Link> : null}
+              <Link className={ui.menuItem} href="/settings">{t("nav.settings")}</Link>
+              <button className={ui.menuItemDanger} onClick={() => signOutWithBackend("/login")} type="button">{t("nav.logout")}</button>
+            </div>
+          </details>
         </div>
       </nav>
     </header>

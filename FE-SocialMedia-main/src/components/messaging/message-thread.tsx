@@ -969,7 +969,7 @@ export function MessageThread({
             {isRecording ? "■" : "🎙️"}
           </button>
           <textarea
-            className="max-h-24 min-h-[36px] flex-1 resize-none rounded-full bg-surface-input px-3 py-2 text-[14px] outline-none focus:ring-2 focus:ring-blue-500/25"
+            className="max-h-24 min-h-[36px] min-w-0 flex-1 resize-none rounded-full bg-surface-input px-3 py-2 text-[14px] outline-none focus:ring-2 focus:ring-blue-500/25"
             onChange={(event) => handleDraftChange(event.target.value)}
             onKeyDown={(event) => {
               if (event.key === "Enter" && !event.shiftKey) {

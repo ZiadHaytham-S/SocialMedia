@@ -81,6 +81,23 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Keep long names, URLs, and grid children within their available width. */
+body {
+  overflow-wrap: anywhere;
+}
+
+@media (width < 80rem) {
+  header.fixed + main {
+    padding-top: 7.25rem;
+  }
+}
+
+@media (width < 40rem) {
+  input, textarea, select {
+    font-size: 16px;
+  }
+}
+
 button,
 input,
 textarea,

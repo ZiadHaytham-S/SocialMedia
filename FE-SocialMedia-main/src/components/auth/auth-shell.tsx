@@ -17,7 +17,7 @@ export function AuthShell({ children, mode }: AuthShellProps) {
   const isRegister = mode === "register";
 
   return (
-    <main className={cn("relative px-4 py-6 sm:py-8", ui.page)}>
+    <main className={cn("relative px-4 pb-6 pt-16 sm:py-8", ui.page)}>
       <div className="absolute end-4 top-4 z-10 flex items-center gap-1">
         <ThemeToggle iconClassName="h-[22px] w-[22px]" />
         <LanguageSwitcher iconClassName="h-[22px] w-[22px]" />

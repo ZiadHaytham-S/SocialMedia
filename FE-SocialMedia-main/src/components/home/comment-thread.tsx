@@ -46,7 +46,7 @@ export function CommentThread({
   onError,
 }: CommentThreadProps) {
   return (
-    <div className={depth > 0 ? "ms-11 mt-2 space-y-2 border-s border-border-light ps-3" : "space-y-3"}>
+    <div className={depth > 0 ? depth < 3 ? "ms-3 mt-2 space-y-2 border-s border-border-light ps-2 sm:ms-8 sm:ps-3" : "mt-2 space-y-2" : "space-y-3"}>
       {nodes.map((node) => (
         <div className="space-y-3" key={node.id}>
           <CommentItem

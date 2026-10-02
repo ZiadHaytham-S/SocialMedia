@@ -62,7 +62,7 @@ export function UserSearchBox({ className, inputClassName, onSelectUser, placeho
       </label>
 
       {showDropdown ? (
-        <div className="absolute start-0 top-[calc(100%+6px)] z-50 max-h-80 w-full min-w-[240px] overflow-y-auto rounded-xl border border-border-light bg-surface shadow-lg">
+        <div className="fixed inset-x-2 top-14 z-50 max-h-[min(320px,calc(100dvh-72px))] overflow-y-auto rounded-xl border border-border-light bg-surface shadow-lg xl:absolute xl:inset-x-auto xl:start-0 xl:top-[calc(100%+6px)] xl:w-full xl:min-w-[240px]">
           {!isReady ? (
             <p className="px-4 py-3 text-[13px] text-t-muted">{t("search.minHint")}</p>
           ) : isSearching ? (

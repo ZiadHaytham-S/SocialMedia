@@ -28,7 +28,7 @@ export function LeftSidebar({ viewer }: SidebarProps) {
   ];
 
   return (
-    <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] overflow-y-auto py-3 ps-1 pe-2 lg:block">
+    <aside className="sticky top-28 hidden h-[calc(100dvh-7rem)] overflow-y-auto py-3 ps-1 pe-2 lg:block xl:top-16 xl:h-[calc(100dvh-4rem)]">
       <nav className="space-y-1">
         <SidebarItem href="/profile" image={viewer.avatarUrl} label={viewer.name || t("sidebar.myProfile")} prominent />
         {isAdmin(viewer) ? <SidebarItem href="/admin" label={t("nav.admin")} prominent /> : null}

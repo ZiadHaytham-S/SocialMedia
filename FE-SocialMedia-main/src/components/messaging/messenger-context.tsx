@@ -56,7 +56,10 @@ type MessengerContextValue = {
 
 const MessengerContext = createContext<MessengerContextValue | null>(null);
 
-const MAX_WINDOWS = 2;
+function maxWindows() {
+  // Reserve room for the inbox and minimized conversations on smaller screens.
+  return window.innerWidth < 1280 ? 1 : 2;
+}
 
 function createWindowId() {
   return `win-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -179,8 +182,9 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
         const existing = current.find((row) => row.conversationId === conversation.id);
 
         if (existing) {
+          const singleWindow = maxWindows() === 1;
           return current.map((row) =>
-            row.id === existing.id ? { ...row, minimized: false } : row,
+            row.id === existing.id ? { ...row, minimized: false } : singleWindow ? { ...row, minimized: true } : row,
           );
         }
 
@@ -194,7 +198,11 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
         const open = current.filter((row) => !row.minimized);
         const minimized = current.filter((row) => row.minimized);
 
-        if (open.length >= MAX_WINDOWS) {
+        if (maxWindows() === 1) {
+          return [...current.map((row) => ({ ...row, minimized: true })), next];
+        }
+
+        if (open.length >= maxWindows()) {
           const [dropped, ...rest] = open;
           return [...rest, next, ...minimized, { ...dropped, minimized: true }];
         }
@@ -227,10 +235,12 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
   );
 
   const toggleInbox = useCallback(() => {
+    if (maxWindows() === 1) setWindows((current) => current.map((row) => ({ ...row, minimized: true })));
     setInboxOpen((open) => !open);
   }, []);
 
   const openInbox = useCallback(() => {
+    if (maxWindows() === 1) setWindows((current) => current.map((row) => ({ ...row, minimized: true })));
     setInboxOpen(true);
   }, []);
 
@@ -257,10 +267,13 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
       }
 
       const others = current.filter((row) => row.id !== windowId);
+      if (maxWindows() === 1) {
+        return [...others.map((row) => ({ ...row, minimized: true })), { ...target, minimized: false }];
+      }
       const open = others.filter((row) => !row.minimized);
       const minimized = others.filter((row) => row.minimized);
 
-      if (open.length >= MAX_WINDOWS) {
+      if (open.length >= maxWindows()) {
         const [dropped, ...restOpen] = open;
         return [...restOpen, { ...target, minimized: false }, ...minimized, { ...dropped, minimized: true }];
       }
@@ -270,6 +283,18 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
 
     setInboxOpen(false);
   }, []);
+
+  useEffect(() => {
+    const fitWindows = () => {
+      if (maxWindows() !== 1) return;
+      setWindows((current) => {
+        const active = inboxOpen ? undefined : current.findLast((row) => !row.minimized)?.id;
+        return current.map((row) => row.id === active ? row : { ...row, minimized: true });
+      });
+    };
+    window.addEventListener("resize", fitWindows);
+    return () => window.removeEventListener("resize", fitWindows);
+  }, [inboxOpen]);
 
   const focusedConversationId = useMemo(() => {
     const open = windows.find((row) => !row.minimized);

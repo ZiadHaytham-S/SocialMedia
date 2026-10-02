@@ -45,7 +45,7 @@ type NavCenterTabProps = {
 
 export function NavCenterTab({ label, active, disabled, href, title, onClick, children }: NavCenterTabProps) {
   const tabClass = cn(
-    "relative flex h-full w-[min(72px,14vw)] shrink-0 items-center justify-center transition sm:w-20 lg:w-[106px]",
+    "relative flex h-full min-w-0 flex-1 items-center justify-center transition xl:w-16 xl:flex-none 2xl:w-[106px]",
     active ? "text-fb" : "text-t-muted",
     !disabled && "hover:bg-surface-hover",
     disabled && "cursor-not-allowed opacity-50",

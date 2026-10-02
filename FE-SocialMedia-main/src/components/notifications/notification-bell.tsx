@@ -272,7 +272,7 @@ export function NotificationBell() {
       {open ? (
         <div
           className={cn(
-            "absolute end-0 top-full z-50 mt-2 w-[min(360px,calc(100vw-1rem))] overflow-hidden rounded-xl border border-border-light bg-surface shadow-[var(--shadow-card)]",
+            "fixed end-2 top-14 z-50 mt-2 w-[min(360px,calc(100vw-1rem))] overflow-hidden rounded-xl border border-border-light bg-surface shadow-[var(--shadow-card)] xl:absolute xl:end-0 xl:top-full",
           )}
           role="dialog"
           aria-label={t("notifications.title")}

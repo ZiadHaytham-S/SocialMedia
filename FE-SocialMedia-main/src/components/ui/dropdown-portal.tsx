@@ -48,7 +48,7 @@ function computePosition(
 ): Position {
   const gap = 6;
   const viewportPadding = 8;
-  const width = fixedWidth ?? Math.max(rect.width, minWidth);
+  const width = Math.min(fixedWidth ?? Math.max(rect.width, minWidth), window.innerWidth - viewportPadding * 2);
   let left = align === "end" ? rect.right - width : rect.left;
   const maxLeft = window.innerWidth - width - viewportPadding;
   left = Math.max(viewportPadding, Math.min(left, maxLeft));
@@ -157,6 +157,8 @@ export function DropdownPortal({
         left: position?.left ?? 0,
         width: position?.width ?? fixedWidth ?? minWidth,
         zIndex: 110,
+        maxHeight: "calc(100dvh - 16px)",
+        overflowY: "auto",
         visibility: position ? "visible" : "hidden",
       }}
     >

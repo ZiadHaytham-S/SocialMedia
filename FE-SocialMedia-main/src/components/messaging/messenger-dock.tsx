@@ -8,7 +8,7 @@ import { MessengerInbox } from "./messenger-inbox";
 import { useMessenger } from "./messenger-context";
 
 const PANEL_CLASS =
-  "pointer-events-auto flex h-[min(620px,calc(100dvh-1rem))] w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-2xl border border-border-light bg-surface shadow-[var(--shadow-elevated)] sm:h-[min(520px,calc(100vh-5rem))] sm:w-[min(380px,calc(100vw-1rem))] sm:rounded-t-2xl";
+  "pointer-events-auto flex shrink-0 h-[min(620px,calc(100dvh-1rem))] w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-2xl border border-border-light bg-surface shadow-[var(--shadow-elevated)] sm:h-[min(520px,calc(100dvh-7.5rem))] sm:w-[min(380px,calc(100vw-1.5rem))] sm:rounded-t-2xl";
 
 export function MessengerDock() {
   const { t } = useLocale();
@@ -49,6 +49,7 @@ export function MessengerDock() {
       {openWindows.map((window) => (
         <div className={PANEL_CLASS} key={window.id}>
           <MessageThread
+            className="h-full"
             compact
             conversationId={window.conversationId}
             onClose={() => closeWindow(window.id)}
@@ -67,6 +68,7 @@ export function MessengerDock() {
       {inboxOpen ? (
         <div className={PANEL_CLASS}>
           <MessengerInbox
+            className="h-full"
             activeConversationId={focusedConversationId}
             conversations={conversations}
             onDeleteConversation={() => {
@@ -85,7 +87,7 @@ export function MessengerDock() {
       ) : null}
 
       {minimizedWindows.length > 0 ? (
-        <div className="pointer-events-auto flex flex-col gap-2 pb-1">
+        <div className={cn("pointer-events-auto max-h-[50dvh] overflow-y-auto flex flex-col gap-2 pb-1", (inboxOpen || openWindows.length > 0) && "hidden sm:flex")}>
           {minimizedWindows.map((window) => (
             <button
               className="relative flex h-12 w-12 items-center justify-center rounded-full bg-surface shadow-[var(--shadow-elevated)] ring-2 ring-fb transition hover:scale-105"
